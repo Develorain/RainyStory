@@ -47,6 +47,9 @@
     <Reference Include="ChipmunkSharp">
       <HintPath>packages\ChipmunkSharp.Windows.7.0.0.0\lib\net40\ChipmunkSharp.dll</HintPath>
     </Reference>
+    <Reference Include="MonoGame.Extended">
+      <HintPath>packages\MonoGame.Extended.0.5.149\lib\MonoGame.Extended.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
