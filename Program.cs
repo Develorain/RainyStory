@@ -23,11 +23,11 @@ namespace RainyStory
 	static class Program
     #endif
     {
-		private static Game1 game;
+		private static GameLoop game;
 
 		internal static void RunGame ()
 		{
-			game = new Game1 ();
+			game = new GameLoop ();
 			game.Run ();
 			#if !__IOS__  && !__TVOS__
 			game.Dispose ();

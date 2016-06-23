@@ -10,7 +10,12 @@ namespace RainyStory
 
 		public static Vector2 toScreenVector2 (cpVect vector)
 		{
-			return new Vector2 (vector.x * SCALE, vector.y * SCALE * -1);
+			return new Vector2 (vector.x * SCALE, vector.y * SCALE);
+		}
+
+		public static Vector2 toScreenVector2 (int x, int y)
+		{
+			return new Vector2 (x * SCALE, y * SCALE);
 		}
 
 		public static int toScreenInt (int integer)
