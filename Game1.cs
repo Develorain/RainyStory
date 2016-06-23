@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Shapes;
 using ChipmunkSharp;
 
 namespace RainyStory
@@ -86,6 +87,8 @@ namespace RainyStory
 
 			spriteBatch.Draw (mapTexture, new Vector2(300, 550), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 			player.draw (spriteBatch);
+
+			SpriteBatchExtensions.DrawRectangle (spriteBatch, new RectangleF(0, 0, 100, 100), Color.Red, 1);
 
 			spriteBatch.End ();
             

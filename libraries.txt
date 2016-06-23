@@ -1,0 +1,4 @@
+Libraries used:
+Monogame
+Monogame.Extended
+ChipmunkSharp
