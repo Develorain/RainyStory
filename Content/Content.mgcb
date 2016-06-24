@@ -50,3 +50,20 @@
 /processorParam:TextureFormat=Color
 /build:mushroom.png
 
+#begin font.fnt
+/importer:BitmapFontImporter
+/processor:BitmapFontProcessor
+/build:font.fnt
+
+#begin font_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:font_0.png
+

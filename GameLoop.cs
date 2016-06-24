@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Shapes;
 using ChipmunkSharp;
+using MonoGame.Extended.BitmapFonts;
 
 namespace RainyStory
 {
@@ -19,27 +20,32 @@ namespace RainyStory
 
 		private Player player;
 		private Texture2D mapTexture;
-		private cpVect pointA = new cpVect (300, 550);
-		private cpVect pointB = new cpVect (900, 550);
+		private cpVect pointA = new cpVect (300, 560);
+		private cpVect pointB = new cpVect (900, 560);
+
+		private KeyboardState oldstate;
+
+		private BitmapFont font;
 
 		public GameLoop ()
 		{
 			graphics = new GraphicsDeviceManager (this);
 			graphics.PreferredBackBufferWidth = 1280;
 			graphics.PreferredBackBufferHeight = 720;
+			graphics.SynchronizeWithVerticalRetrace = false;
 			graphics.ApplyChanges ();
 			Content.RootDirectory = "Content";
 		}
 
 		protected override void Initialize ()
 		{
-			// Create space and initialize gravity
 			space = new cpSpace ();
 			space.SetGravity (new cpVect (0, 1200));
+			space.collisionBias = 0;
 
-			// Create ground and set friction and add to space
 			ground = new cpSegmentShape (space.GetStaticBody (), pointA, pointB, 0);
-			ground.SetFriction (1);
+			ground.SetFriction (1f);
+			ground.SetElasticity (0);
 			space.AddShape (ground);
 
 			player = new Player (Content.Load<Texture2D> ("character"), space);
@@ -53,6 +59,7 @@ namespace RainyStory
 
 			//TODO: use this.Content to load your game content here 
 			mapTexture = Content.Load<Texture2D> ("map");
+			font = Content.Load<BitmapFont> ("font");
 		}
 
 		protected override void Update (GameTime gameTime)
@@ -62,8 +69,28 @@ namespace RainyStory
 				Exit ();
 			#endif
 
+			KeyboardState keyboardState = Keyboard.GetState ();
+
+			if (keyboardState.IsKeyDown (Keys.Left)) {
+				player.body.SetVelocity (new cpVect (-100, player.body.GetVelocity ().y));
+			}
+
+			if (keyboardState.IsKeyDown (Keys.Right)) {
+				player.body.SetVelocity (new cpVect (100, player.body.GetVelocity ().y));
+			}
+
+			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
+				player.body.SetVelocity (new cpVect (player.body.GetVelocity ().x, -400));
+			}
+
+			if (keyboardState.IsKeyDown (Keys.F1) && oldstate.IsKeyUp (Keys.F1)) {
+				Tools.DEBUG = !Tools.DEBUG;
+			}
+
+			oldstate = keyboardState;
+
 			space.Step ((float)gameTime.ElapsedGameTime.TotalSeconds);
-            
+
 			base.Update (gameTime);
 		}
 
@@ -81,7 +108,10 @@ namespace RainyStory
 			player.draw (spriteBatch);
 
 			// Draw ground
-			SpriteBatchExtensions.DrawLine (spriteBatch, Tools.toScreenVector2 (pointA), Tools.toScreenVector2 (pointB), Color.White, 1);
+			if (Tools.DEBUG) {
+				SpriteBatchExtensions.DrawLine (spriteBatch, Tools.toVector2 (pointA), Tools.toVector2 (pointB), Color.White, 1);
+				spriteBatch.DrawString (font, "FPS: " + 1.0f / gameTime.ElapsedGameTime.TotalSeconds, new Vector2 (10, 10), Color.Red);
+			} 
 
 			spriteBatch.End ();
             
