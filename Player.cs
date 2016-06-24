@@ -3,24 +3,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ChipmunkSharp;
 using MonoGame.Extended.Shapes;
+using TexturePackerLoader;
 
 namespace RainyStory
 {
 	public class Player
 	{
-		private Texture2D texture;
-
 		public cpBody body { get; private set; }
 
 		private cpShape collisionShape;
 		private float mass = 1;
-		private int width = 60;
-		private int height = 75;
+		private int width = 38;
+		private int height = 65;
 
-		public Player (Texture2D texture, cpSpace space)
+		private SpriteSheet spriteSheet;
+		private SpriteRender spriteRender;
+
+		public Player (SpriteSheetLoader spriteSheetLoader, SpriteBatch spriteBatch, cpSpace space)
 		{
-			this.texture = texture;
-
 			body = space.AddBody (new cpBody (mass, cp.Infinity));
 			body.SetPosition (new cpVect (600, 0));
 
@@ -33,6 +33,10 @@ namespace RainyStory
 				}, 0));
 			collisionShape.SetFriction (100f);
 			collisionShape.SetElasticity (0);
+
+
+			spriteSheet = spriteSheetLoader.Load ("character");
+			spriteRender = new SpriteRender (spriteBatch);
 		}
 
 		public void draw (SpriteBatch spriteBatch)
@@ -44,8 +48,13 @@ namespace RainyStory
 					1);
 			}
 
-			spriteBatch.Draw (texture, Tools.toVector2 (body.GetPosition ()), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+			//spriteBatch.Draw (texture, Tools.toVector2 (body.GetPosition ()), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+			spriteRender.Draw (spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_0), 
+				Tools.toVector2 (body.GetPosition ()), Color.White, 0, 1, SpriteEffects.None);
+
+			spriteBatch.Draw (spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Alert_0).Texture,
+				new Vector2 (150, 300), Color.White);
 		}
 	}
 }
-

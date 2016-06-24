@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Shapes;
 using ChipmunkSharp;
 using MonoGame.Extended.BitmapFonts;
+using TexturePackerLoader;
 
 namespace RainyStory
 {
@@ -26,6 +27,8 @@ namespace RainyStory
 		private KeyboardState oldstate;
 
 		private BitmapFont font;
+
+		private SpriteSheetLoader spriteSheetLoader;
 
 		public GameLoop ()
 		{
@@ -47,8 +50,6 @@ namespace RainyStory
 			ground.SetFriction (1f);
 			ground.SetElasticity (0);
 			space.AddShape (ground);
-
-			player = new Player (Content.Load<Texture2D> ("character"), space);
             
 			base.Initialize ();
 		}
@@ -56,6 +57,9 @@ namespace RainyStory
 		protected override void LoadContent ()
 		{
 			spriteBatch = new SpriteBatch (GraphicsDevice);
+
+			spriteSheetLoader = new SpriteSheetLoader (Content);
+			player = new Player (spriteSheetLoader, spriteBatch, space);
 
 			//TODO: use this.Content to load your game content here 
 			mapTexture = Content.Load<Texture2D> ("map");
