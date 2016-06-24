@@ -9,28 +9,31 @@ namespace RainyStory
 {
 	public class Player
 	{
-		public cpBody body { get; private set; }
+		public cpBody bodyPoint { get; private set; }
 
 		private cpShape collisionShape;
 		private float mass = 1;
-		private int width = 38;
-		private int height = 65;
+		private int collisionWidth = 38;
+		private int collisionHeight = 65;
 
 		private SpriteSheet spriteSheet;
 		private SpriteRender spriteRender;
 
+		public bool facingLeft = true;
+
 		public Player (SpriteSheetLoader spriteSheetLoader, SpriteBatch spriteBatch, cpSpace space)
 		{
-			body = space.AddBody (new cpBody (mass, cp.Infinity));
-			body.SetPosition (new cpVect (600, 0));
+			bodyPoint = space.AddBody (new cpBody (mass, cp.Infinity));
+			bodyPoint.SetPosition (new cpVect (600, 0));
 
-			collisionShape = space.AddShape (new cpPolyShape (body, 4, 
+			collisionShape = space.AddShape (new cpPolyShape (bodyPoint, 4, 
 				new cpVect[] {
-					new cpVect (0, 0),
-					new cpVect (0, height),
-					new cpVect (width, height),
-					new cpVect (width, 0)
+					new cpVect (-collisionWidth / 2, 0),
+					new cpVect (collisionWidth / 2, 0),
+					new cpVect (collisionWidth / 2, -collisionHeight),
+					new cpVect (-collisionWidth / 2, -collisionHeight)
 				}, 0));
+
 			collisionShape.SetFriction (100f);
 			collisionShape.SetElasticity (0);
 
@@ -41,20 +44,27 @@ namespace RainyStory
 
 		public void draw (SpriteBatch spriteBatch)
 		{
+			SpriteFrame charSprite = spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_0);
+			Vector2 topLeftCornerPos = new Vector2 (bodyPoint.GetPosition ().x - (charSprite.SourceRectangle.Width / 2),
+				                           bodyPoint.GetPosition ().y - charSprite.SourceRectangle.Height);
+
+			spriteRender.Draw (charSprite, topLeftCornerPos, Color.White, 0, 1, facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+
 			if (Tools.DEBUG) {
 				SpriteBatchExtensions.DrawRectangle (spriteBatch, 
-					new RectangleF (Tools.toVector2 (body.GetPosition ()), new Vector2 (width, height)),
+					new RectangleF (topLeftCornerPos, new Vector2 (charSprite.SourceRectangle.Width, charSprite.SourceRectangle.Height)),
 					Color.White, 
 					1);
+
+				Vector2 collisionTopLeftCornerPos = new Vector2 (bodyPoint.GetPosition ().x - (collisionWidth / 2), bodyPoint.GetPosition ().y - collisionHeight);
+
+				SpriteBatchExtensions.DrawRectangle (spriteBatch, 
+					new RectangleF (collisionTopLeftCornerPos, new Vector2 (collisionWidth, collisionHeight)),
+					Color.Red, 
+					1);
+
+				SpriteBatchExtensions.DrawPoint (spriteBatch, Tools.toVector2 (bodyPoint.GetPosition ()), Color.Black, 5);
 			}
-
-			//spriteBatch.Draw (texture, Tools.toVector2 (body.GetPosition ()), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-
-			spriteRender.Draw (spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_0), 
-				Tools.toVector2 (body.GetPosition ()), Color.White, 0, 1, SpriteEffects.None);
-
-			spriteBatch.Draw (spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Alert_0).Texture,
-				new Vector2 (150, 300), Color.White);
 		}
 	}
 }

@@ -76,18 +76,20 @@ namespace RainyStory
 			KeyboardState keyboardState = Keyboard.GetState ();
 
 			if (keyboardState.IsKeyDown (Keys.Left)) {
-				player.body.SetVelocity (new cpVect (-100, player.body.GetVelocity ().y));
+				player.facingLeft = true;
+				player.bodyPoint.SetVelocity (new cpVect (-100, player.bodyPoint.GetVelocity ().y));
 			}
 
 			if (keyboardState.IsKeyDown (Keys.Right)) {
-				player.body.SetVelocity (new cpVect (100, player.body.GetVelocity ().y));
+				player.facingLeft = false;
+				player.bodyPoint.SetVelocity (new cpVect (100, player.bodyPoint.GetVelocity ().y));
 			}
 
 			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
-				player.body.SetVelocity (new cpVect (player.body.GetVelocity ().x, -400));
+				player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
 			}
 
-			if (keyboardState.IsKeyDown (Keys.F1) && oldstate.IsKeyUp (Keys.F1)) {
+			if (keyboardState.IsKeyDown (Keys.Tab) && oldstate.IsKeyUp (Keys.Tab)) {
 				Tools.DEBUG = !Tools.DEBUG;
 			}
 

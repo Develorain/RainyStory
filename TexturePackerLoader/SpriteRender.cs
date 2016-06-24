@@ -46,7 +46,7 @@ namespace TexturePackerLoader
 				sourceRectangle: sprite.SourceRectangle,
 				color: color,
 				rotation: rotation,
-				origin: null,
+				origin: null, // null to fix blurriness, draws sprites in top left corner
 				scale: new Vector2 (scale, scale),
 				effects: spriteEffects,
 				layerDepth: 0
