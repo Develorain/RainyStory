@@ -16,8 +16,8 @@ namespace RainyStory
 		private int collisionWidth = 38;
 		private int collisionHeight = 65;
 
-		private SpriteSheet spriteSheet;
 		private SpriteRender spriteRender;
+		private PlayerAnimationManager playerAnimationManager;
 
 		public bool facingLeft = true;
 
@@ -37,14 +37,18 @@ namespace RainyStory
 			collisionShape.SetFriction (100f);
 			collisionShape.SetElasticity (0);
 
-
-			spriteSheet = spriteSheetLoader.Load ("character");
 			spriteRender = new SpriteRender (spriteBatch);
+			playerAnimationManager = new PlayerAnimationManager (spriteSheetLoader);
+		}
+
+		public void update (GameTime gameTime)
+		{
+			playerAnimationManager.update (gameTime);
 		}
 
 		public void draw (SpriteBatch spriteBatch)
 		{
-			SpriteFrame charSprite = spriteSheet.Sprite (TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_0);
+			SpriteFrame charSprite = playerAnimationManager.getCurrentSprite ();
 			Vector2 topLeftCornerPos = new Vector2 (bodyPoint.GetPosition ().x - (charSprite.SourceRectangle.Width / 2),
 				                           bodyPoint.GetPosition ().y - charSprite.SourceRectangle.Height);
 

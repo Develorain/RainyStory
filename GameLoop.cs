@@ -13,6 +13,8 @@ namespace RainyStory
 {
 	public class GameLoop : Game
 	{
+		private static float FPS = 100;
+
 		private GraphicsDeviceManager graphics;
 		private SpriteBatch spriteBatch;
 
@@ -21,8 +23,9 @@ namespace RainyStory
 
 		private Player player;
 		private Texture2D mapTexture;
-		private cpVect pointA = new cpVect (300, 560);
-		private cpVect pointB = new cpVect (900, 560);
+		private Texture2D backgroundTexture;
+		private cpVect pointA = new cpVect (250, 555);
+		private cpVect pointB = new cpVect (1150, 555);
 
 		private KeyboardState oldstate;
 
@@ -33,10 +36,13 @@ namespace RainyStory
 		public GameLoop ()
 		{
 			graphics = new GraphicsDeviceManager (this);
-			graphics.PreferredBackBufferWidth = 1280;
-			graphics.PreferredBackBufferHeight = 720;
+			graphics.PreferredBackBufferWidth = 1440;
+			graphics.PreferredBackBufferHeight = 900;
 			graphics.SynchronizeWithVerticalRetrace = false;
 			graphics.ApplyChanges ();
+
+			this.TargetElapsedTime = TimeSpan.FromSeconds (1.0f / FPS);
+
 			Content.RootDirectory = "Content";
 		}
 
@@ -63,6 +69,7 @@ namespace RainyStory
 
 			//TODO: use this.Content to load your game content here 
 			mapTexture = Content.Load<Texture2D> ("map");
+			backgroundTexture = Content.Load<Texture2D> ("background");
 			font = Content.Load<BitmapFont> ("font");
 		}
 
@@ -77,12 +84,12 @@ namespace RainyStory
 
 			if (keyboardState.IsKeyDown (Keys.Left)) {
 				player.facingLeft = true;
-				player.bodyPoint.SetVelocity (new cpVect (-100, player.bodyPoint.GetVelocity ().y));
+				player.bodyPoint.SetVelocity (new cpVect (-150, player.bodyPoint.GetVelocity ().y));
 			}
 
 			if (keyboardState.IsKeyDown (Keys.Right)) {
 				player.facingLeft = false;
-				player.bodyPoint.SetVelocity (new cpVect (100, player.bodyPoint.GetVelocity ().y));
+				player.bodyPoint.SetVelocity (new cpVect (150, player.bodyPoint.GetVelocity ().y));
 			}
 
 			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
@@ -97,6 +104,8 @@ namespace RainyStory
 
 			space.Step ((float)gameTime.ElapsedGameTime.TotalSeconds);
 
+			player.update (gameTime);
+
 			base.Update (gameTime);
 		}
 
@@ -107,8 +116,11 @@ namespace RainyStory
 			//TODO: Add your drawing code here
 			spriteBatch.Begin ();
 
+			// Draw background
+			spriteBatch.Draw (backgroundTexture, new Vector2 (0, 0), null, Color.White, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+
 			// Draw map
-			spriteBatch.Draw (mapTexture, new Vector2 (300, 550), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw (mapTexture, new Vector2 (250, 550), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
 			// Draw player
 			player.draw (spriteBatch);
