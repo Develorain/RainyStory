@@ -16,16 +16,37 @@ namespace RainyStory
 		private int spriteTimeIndex = 0;
 		private double startFrameTime = -1;
 
+		private SpriteTime[][] animations;
+		private int animationIndex = 0;
+
 		private SpriteTime[] standSpriteTimes = new SpriteTime[] {
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_0, delayMS = 500 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_1, delayMS = 500 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_2, delayMS = 500 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_3, delayMS = 500 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Stand1_4, delayMS = 500 }
+		};
+
+		private SpriteTime[] walkSpriteTimes = new SpriteTime[] {
 			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Walk1_0, delayMS = 180 },
 			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Walk1_1, delayMS = 180 },
 			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Walk1_2, delayMS = 180 },
 			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Walk1_3, delayMS = 180 }
 		};
 
+		private SpriteTime[] jumpSpriteTimes = new SpriteTime[] {
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Jump_0, delayMS = 200 }
+		};
+
 		public PlayerAnimationManager (SpriteSheetLoader spriteSheetLoader)
 		{
 			spriteSheet = spriteSheetLoader.Load ("character");
+
+			animations = new SpriteTime[][] {
+				standSpriteTimes,
+				walkSpriteTimes,
+				jumpSpriteTimes
+			};
 		}
 
 		public SpriteFrame getCurrentSprite ()
@@ -33,9 +54,22 @@ namespace RainyStory
 			return spriteSheet.Sprite (getCurrentSpriteTime ().textureString);
 		}
 
-		public SpriteTime getCurrentSpriteTime ()
+		private SpriteTime getCurrentSpriteTime ()
 		{
-			return standSpriteTimes [spriteTimeIndex];
+			return getCurrentAnimation () [spriteTimeIndex];
+		}
+
+		private SpriteTime[] getCurrentAnimation ()
+		{
+			return animations [animationIndex];
+		}
+
+		public void setAnimationIndex (int x)
+		{
+			if (animationIndex != x) {
+				animationIndex = x;
+				spriteTimeIndex = 0;
+			}
 		}
 
 		public void update (GameTime gameTime)
@@ -46,7 +80,7 @@ namespace RainyStory
 				double timePassed = gameTime.TotalGameTime.TotalMilliseconds - startFrameTime;
 
 				if (timePassed > getCurrentSpriteTime ().delayMS) {
-					if (spriteTimeIndex + 1 >= standSpriteTimes.Length) {
+					if (spriteTimeIndex + 1 >= getCurrentAnimation ().Length) {
 						spriteTimeIndex = 0;
 					} else {
 						spriteTimeIndex++;

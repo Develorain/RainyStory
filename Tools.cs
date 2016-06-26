@@ -6,7 +6,7 @@ namespace RainyStory
 {
 	public class Tools
 	{
-		public static bool DEBUG = true;
+		public static bool DEBUG = false;
 
 		public static Vector2 toVector2 (cpVect vector)
 		{

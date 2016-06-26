@@ -25,7 +25,7 @@ namespace RainyStory
 		private Texture2D mapTexture;
 		private Texture2D backgroundTexture;
 		private cpVect pointA = new cpVect (250, 555);
-		private cpVect pointB = new cpVect (1150, 555);
+		private cpVect pointB = new cpVect (1150, 755);
 
 		private KeyboardState oldstate;
 
@@ -36,8 +36,8 @@ namespace RainyStory
 		public GameLoop ()
 		{
 			graphics = new GraphicsDeviceManager (this);
-			graphics.PreferredBackBufferWidth = 1440;
-			graphics.PreferredBackBufferHeight = 900;
+			graphics.PreferredBackBufferWidth = 1280;
+			graphics.PreferredBackBufferHeight = 720;
 			graphics.SynchronizeWithVerticalRetrace = false;
 			graphics.ApplyChanges ();
 
@@ -52,9 +52,18 @@ namespace RainyStory
 			space.SetGravity (new cpVect (0, 1200));
 			space.collisionBias = 0;
 
-			ground = new cpSegmentShape (space.GetStaticBody (), pointA, pointB, 0);
+			//ground = new cpSegmentShape (space.GetStaticBody (), pointA, pointB, 0);
+			ground = new cpPolyShape (space.GetStaticBody (), 4,
+				new cpVect[] {
+					new cpVect (pointA.x, pointA.y),
+					new cpVect (pointA.x, pointB.y),
+					new cpVect (pointB.x, pointB.y),
+					new cpVect (pointB.x, pointA.y)
+				}, 0);
+					
 			ground.SetFriction (1f);
 			ground.SetElasticity (0);
+			ground.SetCollisionType (0);
 			space.AddShape (ground);
             
 			base.Initialize ();
@@ -82,18 +91,36 @@ namespace RainyStory
 
 			KeyboardState keyboardState = Keyboard.GetState ();
 
+			bool isKeyPressed = false;
+
 			if (keyboardState.IsKeyDown (Keys.Left)) {
+				isKeyPressed = true;
 				player.facingLeft = true;
 				player.bodyPoint.SetVelocity (new cpVect (-150, player.bodyPoint.GetVelocity ().y));
+
+				if (!Player.isInAir) {
+					player.playerAnimationManager.setAnimationIndex (1);
+				}
 			}
 
 			if (keyboardState.IsKeyDown (Keys.Right)) {
+				isKeyPressed = true;
 				player.facingLeft = false;
 				player.bodyPoint.SetVelocity (new cpVect (150, player.bodyPoint.GetVelocity ().y));
+
+				if (!Player.isInAir) {
+					player.playerAnimationManager.setAnimationIndex (1);
+				}
 			}
 
 			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
+				isKeyPressed = true;
 				player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
+				player.playerAnimationManager.setAnimationIndex (2);
+			}
+
+			if (!Player.isInAir && !isKeyPressed) {
+				player.playerAnimationManager.setAnimationIndex (0);
 			}
 
 			if (keyboardState.IsKeyDown (Keys.Tab) && oldstate.IsKeyUp (Keys.Tab)) {
@@ -125,9 +152,10 @@ namespace RainyStory
 			// Draw player
 			player.draw (spriteBatch);
 
-			// Draw ground
 			if (Tools.DEBUG) {
-				SpriteBatchExtensions.DrawLine (spriteBatch, Tools.toVector2 (pointA), Tools.toVector2 (pointB), Color.White, 1);
+				// Draw ground
+				RectangleF rect = new RectangleF (Tools.toVector2 (pointA), new Vector2 (pointB.x - pointA.x, pointB.y - pointA.y));
+				SpriteBatchExtensions.DrawRectangle (spriteBatch, rect, Color.White, 1);
 				spriteBatch.DrawString (font, "FPS: " + 1.0f / gameTime.ElapsedGameTime.TotalSeconds, new Vector2 (10, 10), Color.Red);
 			} 
 
