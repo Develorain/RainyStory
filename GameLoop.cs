@@ -113,10 +113,23 @@ namespace RainyStory
 				}
 			}
 
+			if (keyboardState.IsKeyDown (Keys.Down)) {
+				isKeyPressed = true;
+
+				if (!Player.isInAir) {
+					player.playerAnimationManager.setAnimationIndex (3);
+				}
+			}
+
 			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
 				isKeyPressed = true;
 				player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
 				player.playerAnimationManager.setAnimationIndex (2);
+			}
+
+			if (keyboardState.IsKeyDown (Keys.C) && oldstate.IsKeyUp (Keys.C)) {
+				isKeyPressed = true;
+				player.playerAnimationManager.setAnimationIndex (4);
 			}
 
 			if (!Player.isInAir && !isKeyPressed) {

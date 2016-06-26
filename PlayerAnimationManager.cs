@@ -38,6 +38,16 @@ namespace RainyStory
 			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Jump_0, delayMS = 200 }
 		};
 
+		private SpriteTime[] proneSpriteTimes = new SpriteTime[] {
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.Prone_0, delayMS = 100 },
+		};
+
+		private SpriteTime[] swingSpriteTimes = new SpriteTime[] {
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.SwingO1_0, delayMS = 300 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.SwingO1_1, delayMS = 150 },
+			new SpriteTime { textureString = TexturePackerMonoGameDefinitions.CharacterTextures.SwingO1_2, delayMS = 350 }
+		};
+
 		public PlayerAnimationManager (SpriteSheetLoader spriteSheetLoader)
 		{
 			spriteSheet = spriteSheetLoader.Load ("character");
@@ -45,7 +55,9 @@ namespace RainyStory
 			animations = new SpriteTime[][] {
 				standSpriteTimes,
 				walkSpriteTimes,
-				jumpSpriteTimes
+				jumpSpriteTimes,
+				proneSpriteTimes,
+				swingSpriteTimes
 			};
 		}
 
