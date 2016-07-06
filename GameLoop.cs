@@ -52,7 +52,6 @@ namespace RainyStory
 			space.SetGravity (new cpVect (0, 1200));
 			space.collisionBias = 0;
 
-			//ground = new cpSegmentShape (space.GetStaticBody (), pointA, pointB, 0);
 			ground = new cpPolyShape (space.GetStaticBody (), 4,
 				new cpVect[] {
 					new cpVect (pointA.x, pointA.y),
@@ -91,49 +90,77 @@ namespace RainyStory
 
 			KeyboardState keyboardState = Keyboard.GetState ();
 
-			bool isKeyPressed = false;
+			switch (player.getState ()) {
+				case PlayerState.PLAYER_STANDING:
+					player.bodyPoint.SetVelocity (new cpVect (0, player.bodyPoint.GetVelocity ().y));
+					player.playerAnimationManager.setAnimationIndex (0);
 
-			if (keyboardState.IsKeyDown (Keys.Left)) {
-				isKeyPressed = true;
-				player.facingLeft = true;
-				player.bodyPoint.SetVelocity (new cpVect (-150, player.bodyPoint.GetVelocity ().y));
+					if (keyboardState.IsKeyDown (Keys.Down)) {
+						player.setState (PlayerState.PLAYER_DUCKING);
+					}
 
-				if (!Player.isInAir) {
+					if (keyboardState.IsKeyDown (Keys.Left)) {
+						player.isFacingLeft = true;
+						player.setState (PlayerState.PLAYER_WALKING);
+					}
+
+					if (keyboardState.IsKeyDown (Keys.Right)) {
+						player.isFacingLeft = false;
+						player.setState (PlayerState.PLAYER_WALKING);
+					}
+
+					if (keyboardState.IsKeyDown (Keys.X)) {
+						player.setState (PlayerState.PLAYER_JUMPING);
+					}
+
+					if (keyboardState.IsKeyDown (Keys.C)) {
+						player.setState (PlayerState.PLAYER_ATTACKING);
+					}
+
+					break;
+
+				case PlayerState.PLAYER_WALKING:
+					if (player.isFacingLeft) {
+						player.bodyPoint.SetVelocity (new cpVect (-150, player.bodyPoint.GetVelocity ().y));
+					} else {
+						player.bodyPoint.SetVelocity (new cpVect (150, player.bodyPoint.GetVelocity ().y));
+					}
+
 					player.playerAnimationManager.setAnimationIndex (1);
-				}
-			}
 
-			if (keyboardState.IsKeyDown (Keys.Right)) {
-				isKeyPressed = true;
-				player.facingLeft = false;
-				player.bodyPoint.SetVelocity (new cpVect (150, player.bodyPoint.GetVelocity ().y));
+					if (keyboardState.IsKeyDown (Keys.X)) {
+						player.setState (PlayerState.PLAYER_JUMPING);
+					}
 
-				if (!Player.isInAir) {
-					player.playerAnimationManager.setAnimationIndex (1);
-				}
-			}
+					if (player.isFacingLeft && !keyboardState.IsKeyDown (Keys.Left) || !player.isFacingLeft && !keyboardState.IsKeyDown (Keys.Right)) {
+						player.setState (PlayerState.PLAYER_STANDING);
+					}
 
-			if (keyboardState.IsKeyDown (Keys.Down)) {
-				isKeyPressed = true;
+					break;
 
-				if (!Player.isInAir) {
-					player.playerAnimationManager.setAnimationIndex (3);
-				}
-			}
+				case PlayerState.PLAYER_DUCKING:
+					if (keyboardState.IsKeyDown (Keys.Down) && !Player.isInAir) {
+						player.playerAnimationManager.setAnimationIndex (3);
+					} else {
+						player.setState (PlayerState.PLAYER_STANDING);
+					}
 
-			if (keyboardState.IsKeyDown (Keys.X) && oldstate.IsKeyUp (Keys.X)) {
-				isKeyPressed = true;
-				player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
-				player.playerAnimationManager.setAnimationIndex (2);
-			}
+					break;
 
-			if (keyboardState.IsKeyDown (Keys.C) && oldstate.IsKeyUp (Keys.C)) {
-				isKeyPressed = true;
-				player.playerAnimationManager.setAnimationIndex (4);
-			}
+				case PlayerState.PLAYER_JUMPING:
+					player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
+					player.playerAnimationManager.setAnimationIndex (2);
 
-			if (!Player.isInAir && !isKeyPressed) {
-				player.playerAnimationManager.setAnimationIndex (0);
+					// add animation timer or sensor to change states
+
+					break;
+
+				case PlayerState.PLAYER_ATTACKING:
+					player.playerAnimationManager.setAnimationIndex (4);
+
+					// add animation timer to change states
+
+					break;
 			}
 
 			if (keyboardState.IsKeyDown (Keys.Tab) && oldstate.IsKeyUp (Keys.Tab)) {
@@ -170,7 +197,7 @@ namespace RainyStory
 				RectangleF rect = new RectangleF (Tools.toVector2 (pointA), new Vector2 (pointB.x - pointA.x, pointB.y - pointA.y));
 				SpriteBatchExtensions.DrawRectangle (spriteBatch, rect, Color.White, 1);
 				spriteBatch.DrawString (font, "FPS: " + 1.0f / gameTime.ElapsedGameTime.TotalSeconds, new Vector2 (10, 10), Color.Red);
-			} 
+			}
 
 			spriteBatch.End ();
             

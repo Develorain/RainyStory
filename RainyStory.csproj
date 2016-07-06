@@ -63,6 +63,7 @@
     <Compile Include="TexturePackerLoader\SpriteSheetLoader.cs" />
     <Compile Include="CharacterTextures.cs" />
     <Compile Include="PlayerAnimationManager.cs" />
+    <Compile Include="PlayerState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

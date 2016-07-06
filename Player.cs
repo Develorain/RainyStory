@@ -23,7 +23,9 @@ namespace RainyStory
 
 		public PlayerAnimationManager playerAnimationManager { get; private set; }
 
-		public bool facingLeft = true;
+		public bool isFacingLeft = true;
+
+		private PlayerState state = PlayerState.PLAYER_STANDING;
 
 		public Player (SpriteSheetLoader spriteSheetLoader, SpriteBatch spriteBatch, cpSpace space)
 		{
@@ -33,23 +35,23 @@ namespace RainyStory
 			bodyPoint.SetPosition (new cpVect (600, 0));
 
 			collisionShape = space.AddShape (new cpPolyShape (bodyPoint, 4, 
-				new cpVect[] {
-					new cpVect (-collisionWidth / 2, 0),
-					new cpVect (collisionWidth / 2, 0),
-					new cpVect (collisionWidth / 2, -collisionHeight),
-					new cpVect (-collisionWidth / 2, -collisionHeight)
-				}, 0));
+					new cpVect[] {
+						new cpVect (-collisionWidth / 2, 0),
+						new cpVect (collisionWidth / 2, 0),
+						new cpVect (collisionWidth / 2, -collisionHeight),
+						new cpVect (-collisionWidth / 2, -collisionHeight)
+					}, 0));
 
 			collisionShape.SetFriction (100f);
 			collisionShape.SetElasticity (0);
 
 			footShape = space.AddShape (new cpPolyShape (bodyPoint, 4, 
-				new cpVect[] {
-					new cpVect (collisionWidth / 2, -5),
-					new cpVect (-collisionWidth / 2, -5),
-					new cpVect (-collisionWidth / 2, 5),
-					new cpVect (collisionWidth / 2, 5),
-				}, 0));
+					new cpVect[] {
+						new cpVect (collisionWidth / 2, -5),
+						new cpVect (-collisionWidth / 2, -5),
+						new cpVect (-collisionWidth / 2, 5),
+						new cpVect (collisionWidth / 2, 5),
+					}, 0));
 			footShape.SetSensor (true);
 			footShape.SetCollisionType (0);
 
@@ -73,7 +75,7 @@ namespace RainyStory
 				                           bodyPoint.GetPosition ().y - charSprite.SourceRectangle.Height);
 
 			// Draw sprite
-			spriteRender.Draw (charSprite, topLeftCornerPos, Color.White, 0, 1, facingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+			spriteRender.Draw (charSprite, topLeftCornerPos, Color.White, 0, 1, isFacingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
 
 			if (Tools.DEBUG) {
 				// Draw sprite boundary
@@ -112,6 +114,16 @@ namespace RainyStory
 		private static void footCollideSeparate (cpArbiter arb, cpSpace space, object data)
 		{
 			Player.isInAir = true;
+		}
+
+		public PlayerState getState ()
+		{
+			return state;
+		}
+
+		public void setState (PlayerState state)
+		{
+			this.state = state;
 		}
 	}
 }
