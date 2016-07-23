@@ -90,9 +90,11 @@ namespace RainyStory
 
 			KeyboardState keyboardState = Keyboard.GetState ();
 
+			// move this to player class
 			switch (player.getState ()) {
 				case PlayerState.PLAYER_STANDING:
 					player.bodyPoint.SetVelocity (new cpVect (0, player.bodyPoint.GetVelocity ().y));
+					//player.bodyPoint.SetPosition (new cpVect (0, 0));
 					player.playerAnimationManager.setAnimationIndex (0);
 
 					if (keyboardState.IsKeyDown (Keys.Down)) {
@@ -115,6 +117,7 @@ namespace RainyStory
 
 					if (keyboardState.IsKeyDown (Keys.C)) {
 						player.setState (PlayerState.PLAYER_ATTACKING);
+						player.delayTimer = 800;
 					}
 
 					break;
@@ -130,6 +133,10 @@ namespace RainyStory
 
 					if (keyboardState.IsKeyDown (Keys.X)) {
 						player.setState (PlayerState.PLAYER_JUMPING);
+					}
+
+					if (keyboardState.IsKeyDown (Keys.C)) {
+						player.setState (PlayerState.PLAYER_STANDING);
 					}
 
 					if (player.isFacingLeft && !keyboardState.IsKeyDown (Keys.Left) || !player.isFacingLeft && !keyboardState.IsKeyDown (Keys.Right)) {
@@ -159,6 +166,11 @@ namespace RainyStory
 					player.playerAnimationManager.setAnimationIndex (4);
 
 					// add animation timer to change states
+					if (player.delayTimer < 0) {
+						player.setState (PlayerState.PLAYER_STANDING);
+					} else {
+						player.delayTimer -= gameTime.ElapsedGameTime.Milliseconds;
+					}
 
 					break;
 			}

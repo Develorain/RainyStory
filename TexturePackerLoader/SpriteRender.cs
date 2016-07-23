@@ -23,21 +23,21 @@ namespace TexturePackerLoader
 			if (sprite.IsRotated) {
 				rotation -= ClockwiseNinetyDegreeRotation;
 				switch (spriteEffects) {
-				case SpriteEffects.FlipHorizontally:
-					spriteEffects = SpriteEffects.FlipVertically;
-					break;
-				case SpriteEffects.FlipVertically:
-					spriteEffects = SpriteEffects.FlipHorizontally;
-					break;
+					case SpriteEffects.FlipHorizontally:
+						spriteEffects = SpriteEffects.FlipVertically;
+						break;
+					case SpriteEffects.FlipVertically:
+						spriteEffects = SpriteEffects.FlipHorizontally;
+						break;
 				}
 			}
 			switch (spriteEffects) {
-			case SpriteEffects.FlipHorizontally:
-				origin.X = sprite.SourceRectangle.Width - origin.X;
-				break;
-			case SpriteEffects.FlipVertically:
-				origin.Y = sprite.SourceRectangle.Height - origin.Y;
-				break;
+				case SpriteEffects.FlipHorizontally:
+					origin.X = sprite.SourceRectangle.Width - origin.X;
+					break;
+				case SpriteEffects.FlipVertically:
+					origin.Y = sprite.SourceRectangle.Height - origin.Y;
+					break;
 			}
 
 			this.spriteBatch.Draw (
@@ -46,7 +46,7 @@ namespace TexturePackerLoader
 				sourceRectangle: sprite.SourceRectangle,
 				color: color,
 				rotation: rotation,
-				origin: null, // null to fix blurriness, draws sprites in top left corner
+				origin: origin, // null to draw sprites in top left corner
 				scale: new Vector2 (scale, scale),
 				effects: spriteEffects,
 				layerDepth: 0

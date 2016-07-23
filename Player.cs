@@ -25,6 +25,8 @@ namespace RainyStory
 
 		public bool isFacingLeft = true;
 
+		public double delayTimer = 0;
+
 		private PlayerState state = PlayerState.PLAYER_STANDING;
 
 		public Player (SpriteSheetLoader spriteSheetLoader, SpriteBatch spriteBatch, cpSpace space)
@@ -71,18 +73,20 @@ namespace RainyStory
 		public void draw (SpriteBatch spriteBatch)
 		{
 			SpriteFrame charSprite = playerAnimationManager.getCurrentSprite ();
-			Vector2 topLeftCornerPos = new Vector2 (bodyPoint.GetPosition ().x - (charSprite.SourceRectangle.Width / 2),
-				                           bodyPoint.GetPosition ().y - charSprite.SourceRectangle.Height);
+			Vector2 centerPos = new Vector2 (bodyPoint.GetPosition ().x,
+				                    bodyPoint.GetPosition ().y - charSprite.Size.Y / 2);
 
 			// Draw sprite
-			spriteRender.Draw (charSprite, topLeftCornerPos, Color.White, 0, 1, isFacingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
+			spriteRender.Draw (charSprite, centerPos, Color.White, 0, 1, isFacingLeft ? SpriteEffects.None : SpriteEffects.FlipHorizontally);
 
 			if (Tools.DEBUG) {
 				// Draw sprite boundary
 				SpriteBatchExtensions.DrawRectangle (spriteBatch, 
-					new RectangleF (topLeftCornerPos, new Vector2 (charSprite.SourceRectangle.Width, charSprite.SourceRectangle.Height)),
-					Color.White, 
-					1);
+					new RectangleF (
+						new Vector2 (centerPos.X - charSprite.Size.X / 2,
+							centerPos.Y - charSprite.Size.Y / 2),
+						charSprite.Size
+					), Color.White, 1);
 
 				Vector2 collisionTopLeftCornerPos = new Vector2 (bodyPoint.GetPosition ().x - (collisionWidth / 2), bodyPoint.GetPosition ().y - collisionHeight);
 
