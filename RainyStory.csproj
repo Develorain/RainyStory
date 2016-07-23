@@ -57,13 +57,13 @@
     <Compile Include="Player.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="GameLoop.cs" />
+    <Compile Include="CharacterTextures.cs" />
+    <Compile Include="PlayerAnimationManager.cs" />
+    <Compile Include="PlayerState.cs" />
     <Compile Include="TexturePackerLoader\SpriteFrame.cs" />
     <Compile Include="TexturePackerLoader\SpriteRender.cs" />
     <Compile Include="TexturePackerLoader\SpriteSheet.cs" />
     <Compile Include="TexturePackerLoader\SpriteSheetLoader.cs" />
-    <Compile Include="CharacterTextures.cs" />
-    <Compile Include="PlayerAnimationManager.cs" />
-    <Compile Include="PlayerState.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

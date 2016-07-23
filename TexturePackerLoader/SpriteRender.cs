@@ -41,12 +41,12 @@ namespace TexturePackerLoader
 			}
 
 			this.spriteBatch.Draw (
-				texture: sprite.Texture,
+				texture: sprite.Texture,	
 				position: position,
 				sourceRectangle: sprite.SourceRectangle,
 				color: color,
 				rotation: rotation,
-				origin: origin, // null to draw sprites in top left corner
+				origin: origin,
 				scale: new Vector2 (scale, scale),
 				effects: spriteEffects,
 				layerDepth: 0
