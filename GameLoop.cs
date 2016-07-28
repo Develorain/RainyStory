@@ -62,7 +62,7 @@ namespace RainyStory
 					
 			ground.SetFriction (1f);
 			ground.SetElasticity (0);
-			ground.SetCollisionType (0);
+			ground.SetCollisionType (2);
 			space.AddShape (ground);
             
 			base.Initialize ();
@@ -90,6 +90,11 @@ namespace RainyStory
 
 			KeyboardState keyboardState = Keyboard.GetState ();
 
+			if (Player.isInAir) {
+				player.setState (PlayerState.PLAYER_AIRBORNE);
+				//Console.WriteLine ("YOU ARE IN THE AIR!");
+			}
+
 			// move this to player class
 			switch (player.getState ()) {
 				case PlayerState.PLAYER_STANDING:
@@ -97,7 +102,7 @@ namespace RainyStory
 					//player.bodyPoint.SetPosition (new cpVect (0, 0));
 					player.playerAnimationManager.setAnimationIndex (0);
 
-					if (keyboardState.IsKeyDown (Keys.Down)) {
+					if (keyboardState.IsKeyDown (Keys.Down) && !Player.isInAir) {
 						player.setState (PlayerState.PLAYER_DUCKING);
 					}
 
@@ -112,7 +117,8 @@ namespace RainyStory
 					}
 
 					if (keyboardState.IsKeyDown (Keys.X)) {
-						player.setState (PlayerState.PLAYER_JUMPING);
+						player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
+						player.setState (PlayerState.PLAYER_AIRBORNE);
 					}
 
 					if (keyboardState.IsKeyDown (Keys.C)) {
@@ -132,7 +138,8 @@ namespace RainyStory
 					player.playerAnimationManager.setAnimationIndex (1);
 
 					if (keyboardState.IsKeyDown (Keys.X)) {
-						player.setState (PlayerState.PLAYER_JUMPING);
+						player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
+						player.setState (PlayerState.PLAYER_AIRBORNE);
 					}
 
 					if (keyboardState.IsKeyDown (Keys.C)) {
@@ -145,20 +152,12 @@ namespace RainyStory
 
 					break;
 
-				case PlayerState.PLAYER_DUCKING:
-					if (keyboardState.IsKeyDown (Keys.Down) && !Player.isInAir) {
-						player.playerAnimationManager.setAnimationIndex (3);
-					} else {
-						player.setState (PlayerState.PLAYER_STANDING);
-					}
-
-					break;
-
-				case PlayerState.PLAYER_JUMPING:
-					player.bodyPoint.SetVelocity (new cpVect (player.bodyPoint.GetVelocity ().x, -400));
+				case PlayerState.PLAYER_AIRBORNE:
 					player.playerAnimationManager.setAnimationIndex (2);
 
-					// add animation timer or sensor to change states
+					if (!Player.isInAir) {
+						player.setState (PlayerState.PLAYER_STANDING);
+					}
 
 					break;
 
@@ -170,6 +169,15 @@ namespace RainyStory
 						player.setState (PlayerState.PLAYER_STANDING);
 					} else {
 						player.delayTimer -= gameTime.ElapsedGameTime.Milliseconds;
+					}
+
+					break;
+
+				case PlayerState.PLAYER_DUCKING:
+					player.playerAnimationManager.setAnimationIndex (3);
+
+					if (!keyboardState.IsKeyDown (Keys.Down)) {
+						player.setState (PlayerState.PLAYER_STANDING);
 					}
 
 					break;
